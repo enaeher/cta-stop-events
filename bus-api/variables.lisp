@@ -9,5 +9,4 @@
 
 (defparameter *route-directions* '("North Bound" "South Bound" "East Bound" "West Bound"))
 
-(defparameter *cta-server-stream* nil
-  "Holds the HTTP stream which is reused for the individual bus prediction requests and bound by WITH-CTA-STREAM.")
+(defparameter lparallel:*kernel* (lparallel:make-kernel 20))
