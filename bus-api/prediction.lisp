@@ -23,44 +23,39 @@
                  :time (xpath->simple-date node "tmstmp")
                  :predicted-time (xpath->simple-date node "prdtm")))
 
-(defun get-predictions-fast (buses)
+(defun get-predictions (buses)
+  (%get-predictions-fast buses))
+
+(defun %get-predictions-fast (buses)
   "Takes a list of BUSES. Requests all predictions for each group of
   10 buses (the maximum allowed per request by the API). Discards all
   but the first prediction for each bus, which will be the
   earliest (the API documentation guarantees that predictions will be
   returned in ascending order of prdtm), and returns the list of these
   earliest predictions. Destructively modifies BUSES."
-  (flet ((get-ten-more ()
-           (let (ten)
-             (dotimes (i 10)
-               (alexandria:when-let (bus (pop buses))
-                 (push (id bus) ten)))
-             ten)))
-    (let ((predictions (loop
-                          :for ten := (get-ten-more)
-                          :while ten
-                          :for all-predictions := (get-cta-data "getpredictions"
-                                                                :xpath "bustime-response/prd"
-                                                                :callback 'xml->prediction
-                                                                :parameters `(:vid ,(format nil "~{~a~^,~}" ten)))
-                          :nconcing (loop
-                                       :for bus :in ten
-                                       :for prediction := (find bus all-predictions :key 'bus)
-                                       :when prediction
-                                       :collect prediction))))
-      (write-log :info "getpredictions (fast) returned ~d predictions" (length predictions))
-      predictions)))
+  (let ((predictions (lparallel:pmapcan
+                      (lambda (ten)
+                        (remove-duplicates (get-cta-data "getpredictions"
+                                                         :xpath "bustime-response/prd"
+                                                         :callback 'xml->prediction
+                                                         :parameters `(:vid ,(format nil "~{~a~^,~}" (mapcar 'id ten))))
+                                           :key 'bus))
+                      (group 10 buses))))
+    (write-log :info "getpredictions (fast) returned ~d predictions" (length predictions))
+    predictions))
 
-(defun get-predictions-slow (buses)
+(defun %get-predictions-slow (buses)
   "Gets predictions for each bus in BUSES one-by-one. This allows us
 to use the top parameter to retrieve only the first prediction for
 each bus."
-  (let ((predictions (loop
-                        :for bus :in buses
-                        :nconc (get-cta-data "getpredictions"
-                                             :xpath "bustime-response/prd"
-                                             :callback 'xml->prediction
-                                             :parameters `(:vid ,(princ-to-string (id bus))
-                                                                :top "1")))))
+  (let ((predictions (lparallel:pmapcan (lambda (bus)
+                                          (get-cta-data "getpredictions"
+                                                        :xpath "bustime-response/prd"
+                                                        :callback 'xml->prediction
+                                                        :parameters `(:vid ,(princ-to-string (id bus))
+                                                                           :top "1")))
+                                        buses)))
     (write-log :info "getpredictions (slow) returned ~d predictions" (length predictions))
     predictions))
+
+
