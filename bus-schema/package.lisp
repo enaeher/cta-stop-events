@@ -5,13 +5,11 @@
   (:nicknames :schema)
   (:export
    ;; classes
-   #:stop-event
-   #:route
    #:stop
-   #:activity-log
+   #:stop-event
+   #:stop-direction
+   #:route
    ;; accessors
    #:id
-   #:direction-name
-   #:stop-time
    #:name
    ))

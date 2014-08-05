@@ -9,17 +9,17 @@
               :initarg :direction
               :reader direction
               :documentation "The direction in which the bus was traveling (East Bound, North Bound, etc.)")
-   (stop-id   :col-type bigint
-              :initarg :stop-id
-              :reader %stop-id
+   (stop      :col-type integer
+              :initarg :stop
+              :reader stop
               :documentation "A foreign key referencing stop.id")
-   (bus-id    :col-type bigint
-              :initarg :bus-id
-              :reader %bus-id
-              :documentation "A foreign key referencing bus.id")
-   (route-id  :col-type bigint
-              :initarg :route-id
-              :reader %route-id
+   ;; (bus       :col-type integer
+   ;;            :initarg :bus
+   ;;            :reader bus
+   ;;            :documentation "A foreign key referencing bus.id")
+   (route     :col-type integer
+              :initarg :route
+              :reader route
               :documentation "A foreign key referencing route.id"))
   (:metaclass pomo:dao-class)
   (:keys stop-time stop-id route-id direction)

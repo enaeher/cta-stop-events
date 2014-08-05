@@ -1,18 +1,14 @@
 (in-package :bus-schema)
 
 (defclass stop ()
-  ((id             :col-type string
+  ((id             :col-type int
                    :initarg :id
                    :reader id
                    :documentation "The CTA-provided stop identifier")
-   (route-id       :col-type string
-                   :initarg :route-id
-                   :reader %route-id
+   (route          :col-type string
+                   :initarg :route
+                   :reader route
                    :documentation "A foreign key referencing route.id")
-   (direction      :col-type string
-                   :initarg :direction
-                   :reader direction
-                   :documentation "A direction name")
    (latitude       :col-type decimal
                    :initarg :latitude
                    :reader latitude

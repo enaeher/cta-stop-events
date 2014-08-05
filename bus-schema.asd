@@ -8,4 +8,5 @@
                         :components ((:file "package")
                                      (:file "route" :depends-on ("package"))
                                      (:file "stop" :depends-on ("package"))
-                                     (:file "stop-event" :depends-on ("package"))))))
+                                     (:file "stop-event" :depends-on ("package"))
+                                     (:file "stop-direction" :depends-on ("package"))))))
