@@ -23,7 +23,36 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
+--
+-- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
+
+
 SET search_path = public, pg_catalog;
+
+--
+-- Name: update_stop_location(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION update_stop_location() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    -- Populate stop_location with PostGIS POINT based on the provided latitude and longitude
+    NEW.stop_location := ('SRID=4326;POINT(' || NEW.latitude || ' ' || NEW.longitude || ')')::geometry;
+    RETURN NEW;
+  END;
+$$;
+
 
 SET default_tablespace = '';
 
@@ -47,7 +76,8 @@ CREATE TABLE stop (
     id integer NOT NULL,
     name text NOT NULL,
     latitude numeric,
-    longitude numeric
+    longitude numeric,
+    stop_location geometry(Point,4326)
 );
 
 
@@ -112,6 +142,13 @@ ALTER TABLE ONLY stop_route_direction
 --
 
 CREATE INDEX route_id ON route USING btree (id);
+
+
+--
+-- Name: update_stop_location; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_stop_location BEFORE INSERT OR UPDATE ON stop FOR EACH ROW EXECUTE PROCEDURE update_stop_location();
 
 
 --
