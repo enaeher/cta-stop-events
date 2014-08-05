@@ -11,13 +11,24 @@
      :for key :being :the :hash-keys :of a
      :using (hash-value prediction-a)
      :when (alexandria:when-let (prediction-b (gethash key b))
-             (not (eql (api:stop prediction-a) (api:stop prediction-b))))
+             (not (eql (api:prediction-stop prediction-a) (api:prediction-stop prediction-b))))
      :collect prediction-a))
 
 (defun prediction->stop-event (prediction)
   (make-instance 'schema:stop-event
-                 :route (api:route prediction)
-                 :bus (api:bus prediction)
-                 :stop (api:stop prediction)
-                 :direction (api:direction prediction)
-                 :stop-time (api:predicted-time prediction)))
+                 :route (api:prediction-route prediction)
+                 :bus (api:prediction-bus prediction)
+                 :stop (api:prediction-stop prediction)
+                 :direction (api:prediction-direction prediction)
+                 :stop-time (api:prediction-predicted-time prediction)))
+
+(defun generate-stop-events ()
+  (log:write-log :info "Begin generating stop events")
+  (pomo:with-connection *database-connection-spec*
+    (let ((new-predictions (api:get-predictions (api:get-all-current-buses))))
+      (if *previous-predictions*
+          (dolist (prediction (find-fulfilled-predictions *previous-predictions* new-predictions))
+            (pomo:save-dao (prediction->stop-event prediction)))
+          (log:write-log :info "No previous stop events found (first run)"))
+      (setf *previous-predictions* new-predictions)))
+  (log:write-log :info "Done generating stop events"))

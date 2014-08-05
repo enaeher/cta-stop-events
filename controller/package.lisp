@@ -4,4 +4,7 @@
   (:use #:cl #:cl-user)
   (:nicknames :controller)
   (:export
-   ))
+   #:start
+   #:stop
+   #:debug-on
+   #:debug-off))

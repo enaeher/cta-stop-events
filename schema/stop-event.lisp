@@ -22,6 +22,6 @@
               :reader route
               :documentation "A foreign key referencing route.id"))
   (:metaclass pomo:dao-class)
-  (:keys stop-time stop-id route-id direction)
+  (:keys stop-time stop route direction)
   (:documentation "A BUS-STOP-EVENT records  the time and direction at
   which a given bus on a given route made a stop."))
