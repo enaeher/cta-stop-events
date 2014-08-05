@@ -17,5 +17,5 @@ to deal with stops that are removed (i.e. stop appearing in the API)."
       (pomo:save-dao route)
       (dolist (direction (api:get-directions route))
         (dolist (stop (api:get-stops route direction))
-          (maybe-make-stop-route-direction stop route direction)
-          (pomo:save-dao stop))))))
+          (pomo:save-dao stop)
+          (maybe-make-stop-route-direction stop route direction))))))
