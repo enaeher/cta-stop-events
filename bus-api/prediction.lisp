@@ -33,29 +33,25 @@
   earliest (the API documentation guarantees that predictions will be
   returned in ascending order of prdtm), and returns the list of these
   earliest predictions. Destructively modifies BUSES."
-  (let ((predictions (lparallel:pmapcan
-                      (lambda (ten)
-                        (remove-duplicates (get-cta-data "getpredictions"
-                                                         :xpath "bustime-response/prd"
-                                                         :callback 'xml->prediction
-                                                         :parameters `(:vid ,(format nil "~{~a~^,~}" (mapcar 'id ten))))
-                                           :key 'bus))
-                      (group 10 buses))))
-    (write-log :info "getpredictions (fast) returned ~d predictions" (length predictions))
-    predictions))
+  (lparallel:pmapcan
+   (lambda (ten)
+     (remove-duplicates (get-cta-data "getpredictions"
+                                      :xpath "bustime-response/prd"
+                                      :callback 'xml->prediction
+                                      :parameters `(:vid ,(format nil "~{~a~^,~}" (mapcar 'id ten))))
+                        :key 'bus))
+   (group 10 buses)))
 
 (defun %get-predictions-slow (buses)
   "Gets predictions for each bus in BUSES one-by-one. This allows us
 to use the top parameter to retrieve only the first prediction for
 each bus."
-  (let ((predictions (lparallel:pmapcan (lambda (bus)
-                                          (get-cta-data "getpredictions"
-                                                        :xpath "bustime-response/prd"
-                                                        :callback 'xml->prediction
-                                                        :parameters `(:vid ,(princ-to-string (id bus))
-                                                                           :top "1")))
-                                        buses)))
-    (write-log :info "getpredictions (slow) returned ~d predictions" (length predictions))
-    predictions))
+  (lparallel:pmapcan (lambda (bus)
+                       (get-cta-data "getpredictions"
+                                     :xpath "bustime-response/prd"
+                                     :callback 'xml->prediction
+                                     :parameters `(:vid ,(princ-to-string (id bus))
+                                                        :top "1")))
+                     buses))
 
 

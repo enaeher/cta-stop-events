@@ -13,21 +13,17 @@
                  :name (xpath->string node "rtnm")))
 
 (defun get-directions (route)
-  (let ((directions (get-cta-data "getdirections"
-                                  :xpath "bustime-response/dir"
-                                  :callback 'xpath:string-value
-                                  :parameters `(:rt ,(schema:id route)))))
-    (write-log :info "getdirections returned ~d directions" (length directions))
-    directions))
+  (get-cta-data "getdirections"
+                :xpath "bustime-response/dir"
+                :callback 'xpath:string-value
+                :parameters `(:rt ,(schema:id route))))
 
 (defun get-stops (route direction)
-  (let ((stops (get-cta-data "getstops"
-                             :xpath "bustime-response/stop"
-                             :callback (alexandria:rcurry 'xml->stop route)
-                             :parameters `(:rt ,(schema:id route)
-                                               :dir ,direction))))
-    (write-log :info "getstops returned ~d stops" (length stops))
-    stops))
+  (get-cta-data "getstops"
+                :xpath "bustime-response/stop"
+                :callback (alexandria:rcurry 'xml->stop route)
+                :parameters `(:rt ,(schema:id route)
+                                  :dir ,direction)))
 
 (defun xml->stop (node route)
   (make-instance 'schema:stop
@@ -38,22 +34,18 @@
                  :route (schema:id route)))
 
 (defun get-vehicles ()
-  (let ((vehicles (get-cta-data "getvehicles"
-                       :xpath "bustime-response/vehicle"
-                       :callback 'xml->bus)))
-    (write-log :info "getvehicles returned ~d vehicles" (length vehicles))
-    vehicles))
+  (get-cta-data "getvehicles"
+                :xpath "bustime-response/vehicle"
+                :callback 'xml->bus))
 
 (defun get-all-current-buses ()
   "The current, documented version of the API provides no way to get a
 list of every bus in one call. Luckily, this undocumented, unsupported
 endpoint of the old API will give us the information that we need."
   (let ((*bus-api-base-uri* "http://ctabustracker.com/bustime/"))
-    (let ((buses (get-cta-data "map/getBusesForRouteAll.jsp" 
-                               :xpath "buses/bus"
-                               :callback #'xml->bus)))
-      (write-log :info "getBusesForRouteAll returned ~d buses" (length buses))
-      buses)))
+    (get-cta-data "map/getBusesForRouteAll.jsp" 
+                  :xpath "buses/bus"
+                  :callback #'xml->bus)))
 
 (defun xml->bus (node)
   (make-instance 'bus
