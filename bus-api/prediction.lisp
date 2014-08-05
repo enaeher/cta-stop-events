@@ -1,30 +1,23 @@
 (in-package :bus-api)
 
-(defclass prediction ()
-  ((type      :initarg :type
-              :reader prediction-type)
-   (route     :initarg :route
-              :reader route)
-   (bus       :initarg :bus
-              :reader bus)
-   (stop      :initarg :stop
-              :reader stop)
-   (direction :initarg :direction
-              :reader direction)
-   (time      :initarg :time
-              :reader prediction-time)
-   (predicted-time :initarg :predicted-time
-                   :reader predicted-time)))
+(defstruct prediction
+  type
+  route
+  bus
+  stop
+  direction
+  timestamp
+  predicted-time)
 
 (defun xml->prediction (node)
-  (make-instance 'prediction
-                 :type (xpath->string node "typ")
-                 :bus (xpath->number node "vid")
-                 :stop (xpath->number node "stpid")
-                 :direction (xpath->string node "rtdir")
-                 :route (xpath->string node "rt")
-                 :time (xpath->simple-date node "tmstmp")
-                 :predicted-time (xpath->simple-date node "prdtm")))
+  (make-prediction
+   :type (xpath->string node "typ")
+   :bus (xpath->number node "vid")
+   :stop (xpath->number node "stpid")
+   :direction (xpath->string node "rtdir")
+   :route (xpath->string node "rt")
+   :timestamp (xpath->simple-date node "tmstmp")
+   :predicted-time (xpath->simple-date node "prdtm")))
 
 (defun get-predictions (buses)
   (%get-predictions-fast buses))
@@ -42,9 +35,9 @@
        (dolist (prediction (get-cta-data "getpredictions"
                                          :xpath "bustime-response/prd"
                                          :callback 'xml->prediction
-                                         :parameters `(:vid ,(format nil "~{~a~^,~}" (mapcar 'id ten)))))
-         (unless (gethash (bus prediction) predictions)
-           (setf (gethash (bus prediction) predictions) prediction))))
+                                         :parameters `(:vid ,(format nil "~{~a~^,~}" (mapcar 'bus-id ten)))))
+         (unless (gethash (prediction-bus prediction) predictions)
+           (setf (gethash (prediction-bus prediction) predictions) prediction))))
      (group 10 buses))
     predictions))
 
@@ -59,9 +52,9 @@ roughly twice as long due to the additional network overhead."
        (alexandria:when-let (prediction (car (get-cta-data "getpredictions"
                                                            :xpath "bustime-response/prd"
                                                            :callback 'xml->prediction
-                                                           :parameters `(:vid ,(princ-to-string (id bus))
+                                                           :parameters `(:vid ,(princ-to-string (bus-id bus))
                                                                               :top "1"))))
-         (setf (gethash (bus prediction) predictions) prediction)))
+         (setf (gethash (prediction-bus prediction) predictions) prediction)))
      buses)
     predictions))
 

@@ -46,7 +46,11 @@ endpoint of the old API will give us the information that we need."
                   :xpath "buses/bus"
                   :callback #'xml->bus)))
 
+(defstruct bus
+  id
+  route)
+
 (defun xml->bus (node)
-  (make-instance 'bus
-                 :id (xpath->number node "id")
-                 :route (xpath->string node "rt")))
+  (make-bus 
+   :id (xpath->number node "id")
+   :route (xpath->string node "rt")))

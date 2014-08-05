@@ -9,6 +9,5 @@
                                      (:file "variables" :depends-on ("package"))
                                      (:file "util" :depends-on ("variables"))
                                      (:file "log" :depends-on ("util"))
-                                     (:file "bus" :depends-on ("util"))
                                      (:file "api" :depends-on ("log"))
                                      (:file "prediction" :depends-on ("log"))))))
