@@ -25,10 +25,11 @@
 
 (defun get-predictions-fast (buses)
   "Takes a list of BUSES. Requests all predictions for each group of
-  10 buses (the maximum allowed per request by the API). Determines
-  the earliest prediction for each bus (i.e., the next predicted stop
-  for that bus), and returns the list of these earliest
-  predictions. Destructively modifies BUSES."
+  10 buses (the maximum allowed per request by the API). Discards all
+  but the first prediction for each bus, which will be the
+  earliest (the API documentation guarantees that predictions will be
+  returned in ascending order of prdtm), and returns the list of these
+  earliest predictions. Destructively modifies BUSES."
   (flet ((get-ten-more ()
            (let (ten)
              (dotimes (i 10)
@@ -42,19 +43,18 @@
                                                                 :xpath "bustime-response/prd"
                                                                 :callback 'xml->prediction
                                                                 :parameters `(:vid ,(format nil "~{~a~^,~}" ten)))
-                          :nconcing (let (earliest-predictions)
-                                      (loop
-                                         :for prediction :in all-predictions
-                                         :do (alexandria:if-let (n (position prediction earliest-predictions :key 'bus))
-                                               (when (simple-date:time< (predicted-time prediction)
-                                                                        (predicted-time (nth n earliest-predictions)))
-                                                 (setf (nth n earliest-predictions) prediction))
-                                               (push prediction earliest-predictions)))
-                                      earliest-predictions))))
+                          :nconcing (loop
+                                       :for bus :in ten
+                                       :for prediction := (find bus all-predictions :key 'bus)
+                                       :when prediction
+                                       :collect prediction))))
       (write-log :info "getpredictions (fast) returned ~d predictions" (length predictions))
       predictions)))
 
 (defun get-predictions-slow (buses)
+  "Gets predictions for each bus in BUSES one-by-one. This allows us
+to use the top parameter to retrieve only the first prediction for
+each bus."
   (let ((predictions (loop
                         :for bus :in buses
                         :nconc (get-cta-data "getpredictions"
