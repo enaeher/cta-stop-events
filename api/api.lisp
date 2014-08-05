@@ -1,11 +1,9 @@
 (in-package :cta.api)
 
 (defun get-routes ()
-  (let ((routes (get-cta-data "getroutes" 
-                       :xpath "bustime-response/route"
-                       :callback 'xml->route)))
-    (write-log :info "getroutes returned ~d routes" (length routes))
-    routes))
+  (get-cta-data "getroutes" 
+                :xpath "bustime-response/route"
+                :callback 'xml->route))
 
 (defun xml->route (node)
   (make-instance 'schema:route

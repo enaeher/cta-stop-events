@@ -9,12 +9,13 @@
    #:get-directions
    #:get-all-current-buses
    #:get-predictions
-   
-   #:stop
-   #:prediction
+
    #:bus
-   #:direction
-   #:route
+   #:prediction
+   #:prediction-stop
+   #:prediction-bus
+   #:prediction-direction
+   #:prediction-route
    #:prediction-type
-   #:prediction-time
-   #:predicted-time))
+   #:prediction-timestamp
+   #:prediction-predicted-time))

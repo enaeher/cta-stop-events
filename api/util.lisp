@@ -10,8 +10,8 @@
          (parameters (cons (cons "key" *bus-api-key*)
                            (loop for (key value) on parameters by #'cddr
                               collecting (cons (string-downcase key) value))))
-         (final-uri (concatenate 'string base-uri (drakma::alist-to-url-encoded-string parameters :utf8 'drakma:url-encode))))
-    (write-log :debug final-uri)
+         (final-uri (concatenate 'string base-uri "&" (drakma::alist-to-url-encoded-string parameters :utf8 'drakma:url-encode))))
+    (log:write-log :debug final-uri)
     (cxml:parse 
      (drakma:http-request base-uri
                           :parameters parameters

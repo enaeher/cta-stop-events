@@ -1,4 +1,4 @@
-(in-package :cta.api)
+(in-package :cta.log)
 
 (defun write-log (level &rest args)
   (unless (and (eql level :debug)
