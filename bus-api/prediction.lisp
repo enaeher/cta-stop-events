@@ -34,8 +34,8 @@
   10 buses (the maximum allowed per request by the API). Discards all
   but the first prediction for each bus, which will be the
   earliest (the API documentation guarantees that predictions will be
-  returned in ascending order of prdtm), and returns the list of these
-  earliest predictions. Destructively modifies BUSES."
+  returned in ascending order of prdtm), and returns the set of these
+  earliest predictions as a hash table keyed by bus ID."
   (let ((predictions (make-hash-table :size 1000 :synchronized t)))
     (lparallel:pmapc
      (lambda (ten)
