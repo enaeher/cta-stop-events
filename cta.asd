@@ -2,5 +2,4 @@
   :license "Public Domain"
   :author "Eli Naeher"
   :version (:read-file-form "VERSION")
-  :depends-on (:bus-schema
-               :bus-api))
+  :depends-on (:bus-controller))

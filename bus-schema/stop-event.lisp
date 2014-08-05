@@ -13,10 +13,10 @@
               :initarg :stop
               :reader stop
               :documentation "A foreign key referencing stop.id")
-   ;; (bus       :col-type integer
-   ;;            :initarg :bus
-   ;;            :reader bus
-   ;;            :documentation "A foreign key referencing bus.id")
+   (bus       :col-type integer
+              :initarg :bus
+              :reader bus
+              :documentation "The ID of the bus making the stop. Currently, we don't store buses so this is not a foreign key.")
    (route     :col-type integer
               :initarg :route
               :reader route

@@ -8,4 +8,13 @@
    #:get-stops
    #:get-directions
    #:get-all-current-buses
-   #:get-predictions))
+   #:get-predictions
+   
+   #:stop
+   #:prediction
+   #:bus
+   #:direction
+   #:route
+   #:prediction-type
+   #:prediction-time
+   #:predicted-time))
