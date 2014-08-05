@@ -1,4 +1,4 @@
-(in-package :bus-api)
+(in-package :cta.api)
 
 (defun get-cta-data (name &key (callback #'identity) (xpath "/") parameters)
   (xpath:map-node-set->list

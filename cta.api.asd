@@ -1,10 +1,10 @@
-(defsystem :bus-api
+(defsystem :cta.api
   :license "Public Domain"
   :author "Eli Naeher"
   :description "Methods for accessing the bus tracker API"
   :version (:read-file-form "VERSION")
-  :depends-on (:bus-schema :alexandria :cxml :cl-ppcre :drakma :xpath :cl-syslog :lparallel)
-  :components ((:module "bus-api"
+  :depends-on (:cta.schema :alexandria :cxml :cl-ppcre :drakma :xpath :cl-syslog :lparallel)
+  :components ((:module "api"
                         :components ((:file "package")
                                      (:file "variables" :depends-on ("package"))
                                      (:file "util" :depends-on ("variables"))

@@ -1,4 +1,4 @@
-(in-package :bus-controller)
+(in-package :cta.controller)
 
 (defun find-fulfilled-predictions (a b)
   "A and B should each be hash tables of predictions keyed by bus

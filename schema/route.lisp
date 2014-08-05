@@ -1,4 +1,4 @@
-(in-package :bus-schema)
+(in-package :cta.schema)
 
 (defclass route ()
   ((id     :col-type string

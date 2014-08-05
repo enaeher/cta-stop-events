@@ -1,6 +1,6 @@
 (in-package :cl-user)
 
-(defpackage :bus-schema
+(defpackage :cta.schema
   (:use #:cl #:cl-user)
   (:nicknames :schema)
   (:export

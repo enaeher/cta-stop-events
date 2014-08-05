@@ -1,6 +1,6 @@
 (in-package :cl-user)
 
-(defpackage :bus-api
+(defpackage :cta.api
   (:use #:cl #:cl-user)
   (:nicknames :api)
   (:export

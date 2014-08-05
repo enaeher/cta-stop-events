@@ -1,6 +1,6 @@
 (in-package :cl-user)
 
-(defpackage :bus-controller
+(defpackage :cta.controller
   (:use #:cl #:cl-user)
   (:nicknames :controller)
   (:export

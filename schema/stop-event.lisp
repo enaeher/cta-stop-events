@@ -1,4 +1,4 @@
-(in-package :bus-schema)
+(in-package :cta.schema)
 
 (defclass stop-event ()
   ((stop-time :col-type simple-date:timestamp

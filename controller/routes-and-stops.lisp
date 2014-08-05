@@ -1,4 +1,4 @@
-(in-package :bus-controller)
+(in-package :cta.controller)
 
 (defun maybe-make-stop-route-direction (stop route direction)
   (let ((dao (make-instance 'schema:stop-route-direction

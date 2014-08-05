@@ -1,4 +1,4 @@
-(in-package :bus-api)
+(in-package :cta.api)
 
 (defstruct prediction
   type

@@ -1,4 +1,4 @@
-(in-package :bus-api)
+(in-package :cta.api)
 
 (defparameter *syslog-identifier* "bus-api")
 

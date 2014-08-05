@@ -1,4 +1,4 @@
-(in-package :bus-schema)
+(in-package :cta.schema)
 
 (defclass stop-route-direction ()
   ((stop           :col-type integer
