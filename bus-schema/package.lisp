@@ -7,7 +7,7 @@
    ;; classes
    #:stop
    #:stop-event
-   #:stop-direction
+   #:stop-route-direction
    #:route
    ;; accessors
    #:id

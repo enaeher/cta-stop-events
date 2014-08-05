@@ -21,17 +21,16 @@
 (defun get-stops (route direction)
   (get-cta-data "getstops"
                 :xpath "bustime-response/stop"
-                :callback (alexandria:rcurry 'xml->stop route)
+                :callback 'xml->stop
                 :parameters `(:rt ,(schema:id route)
                                   :dir ,direction)))
 
-(defun xml->stop (node route)
+(defun xml->stop (node)
   (make-instance 'schema:stop
                  :id (xpath->number node "stpid")
                  :name (xpath->string node "stpnm")
                  :latitude (xpath->number node "lat")
-                 :longitude (xpath->number node "lon")
-                 :route (schema:id route)))
+                 :longitude (xpath->number node "lon")))
 
 (defun get-vehicles ()
   (get-cta-data "getvehicles"

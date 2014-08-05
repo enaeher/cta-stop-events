@@ -5,10 +5,6 @@
                    :initarg :id
                    :reader id
                    :documentation "The CTA-provided stop identifier")
-   (route          :col-type string
-                   :initarg :route
-                   :reader route
-                   :documentation "A foreign key referencing route.id")
    (latitude       :col-type decimal
                    :initarg :latitude
                    :reader latitude
