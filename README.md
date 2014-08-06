@@ -22,7 +22,7 @@ Run `./build.sh` in the top-level directory. The first time you do this, Quickli
 
 ## Running
 
-Run the `chicago-transit` binary in the same directory as your `config.lisp`. This will open a REPL where you can interact with the application; as well as a Swank listener on the default port (4005) so that you can connect to it from Slime in Emacs.
+Run the `chicago-transit` binary in the same directory as your `config.lisp`. This will open a REPL where you can interact with the application, as well as a Swank listener on the default port (4005) so that you can connect to it from Slime in Emacs.
 
 Every time you start the application, it will immediately update its local list of CTA routes and stops. It will then update that list every night at midnight, and retrieve predictions (and generate stop events) for every bus every minute on the minute.
 
