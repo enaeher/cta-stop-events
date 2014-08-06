@@ -23,13 +23,14 @@
                  :stop-time (api:prediction-predicted-time prediction)))
 
 (defun generate-stop-events ()
-  (log:write-log :info "Begin generating stop events")
-  (sb-ext:gc :full t)
-  (pomo:with-connection *database-connection-spec*
-    (let ((new-predictions (api:get-predictions (api:get-all-current-buses))))
-      (if *previous-predictions*
-          (dolist (prediction (find-fulfilled-predictions *previous-predictions* new-predictions))
-            (pomo:save-dao (prediction->stop-event prediction)))
-          (log:write-log :info "No previous stop events found (first run)"))
-      (setf *previous-predictions* new-predictions)))
-  (log:write-log :info "Done generating stop events"))
+  (sb-sys:with-interrupts
+    (log:write-log :info "Begin generating stop events")
+    (sb-ext:gc :full t)
+    (pomo:with-connection *database-connection-spec*
+      (let ((new-predictions (api:get-predictions (api:get-all-current-buses))))
+        (if *previous-predictions*
+            (dolist (prediction (find-fulfilled-predictions *previous-predictions* new-predictions))
+              (pomo:save-dao (prediction->stop-event prediction)))
+            (log:write-log :info "No previous stop events found (first run)"))
+        (setf *previous-predictions* new-predictions)))
+    (log:write-log :info "Done generating stop events")))
