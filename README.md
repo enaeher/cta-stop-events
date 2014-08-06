@@ -14,7 +14,7 @@ You will need [SBCL](http://www.sbcl.org) to run chicago-transit, along with the
 
 ## Configuration
 
-Copy the file `config.lisp.sample` to `config.lisp` and set the \*bus-api-key\* (you can obtain a key at http://www.transitchicago.com/developers/bustracker.aspx) and \*database-connection-spec\* parameters.
+Copy the file `config.lisp.example` to `config.lisp` and set the \*bus-api-key\* (you can obtain a key at http://www.transitchicago.com/developers/bustracker.aspx) and \*database-connection-spec\* parameters.
 
 ## Building
 
