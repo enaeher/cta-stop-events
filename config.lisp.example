@@ -1,0 +1,15 @@
+;; Rename this file to config.lisp and place it in the working
+;; directory of the cta process.
+
+(in-package :cta.api)
+
+;; Go to http://www.transitchicago.com/developers/bustracker.aspx to
+;; request an API key from the CTA
+
+(defparameter *bus-api-key* "add your API key here")
+
+(in-package :cta.controller)
+
+;; (<dbname> <username> <password> <host>) for Postgres connection
+
+(defparameter *database-connection-spec* '("cta" "eli" "" "localhost"))

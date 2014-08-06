@@ -1,1 +1,3 @@
 *.fasl
+chicago-transit
+config.lisp

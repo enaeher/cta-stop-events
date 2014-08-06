@@ -6,7 +6,7 @@
          (midnight (local-time:timestamp-minimize-part now :hour))
          (next-minute (local-time:timestamp-minimize-part now :sec))
          (seconds-per-day 86400)
-         (seconds-per-minute 60))   
+         (seconds-per-minute 60))
     (trivial-timers:schedule-timer *routes-and-stops-timer* (local-time:timestamp-to-universal midnight)
                                    :repeat-interval seconds-per-day
                                    :absolute-p t)

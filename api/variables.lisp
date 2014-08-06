@@ -2,7 +2,3 @@
 
 (defparameter *bus-api-base-uri* "http://ctabustracker.com/bustime/api/v1/"
   "The base URI for constructing CTA API queries")
-
-(defparameter *bus-api-key* "add your API key here")
-
-(defparameter lparallel:*kernel* (lparallel:make-kernel 20))
