@@ -88,9 +88,9 @@ CREATE TABLE stop (
 CREATE TABLE stop_event (
     stop_time timestamp without time zone NOT NULL,
     direction text NOT NULL,
-    stop_id bigint NOT NULL,
-    bus_id bigint NOT NULL,
-    route_id text NOT NULL
+    stop integer NOT NULL,
+    bus integer NOT NULL,
+    route text NOT NULL
 );
 
 
@@ -118,7 +118,7 @@ ALTER TABLE ONLY route
 --
 
 ALTER TABLE ONLY stop_event
-    ADD CONSTRAINT bus_stop_event_pkey PRIMARY KEY (stop_time, stop_id, route_id, direction);
+    ADD CONSTRAINT bus_stop_event_pkey PRIMARY KEY (stop_time, stop, route, direction);
 
 
 --
@@ -149,6 +149,22 @@ CREATE INDEX route_id ON route USING btree (id);
 --
 
 CREATE TRIGGER update_stop_location BEFORE INSERT OR UPDATE ON stop FOR EACH ROW EXECUTE PROCEDURE update_stop_location();
+
+
+--
+-- Name: stop_event_route; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY stop_event
+    ADD CONSTRAINT stop_event_route FOREIGN KEY (route) REFERENCES route(id);
+
+
+--
+-- Name: stop_event_stop; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY stop_event
+    ADD CONSTRAINT stop_event_stop FOREIGN KEY (stop) REFERENCES stop(id);
 
 
 --
