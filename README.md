@@ -10,7 +10,7 @@ You'll need [PostgreSQL](http://www.postgresql.org) and the [PostGIS](http://www
 
 ### API key
 
-Configure the *bus-api-key* in `api/variables.lisp`.
+Configure the \*bus-api-key\* in `api/variables.lisp`.
 
 ### SBCL
 
