@@ -11,6 +11,7 @@
   (swank:create-server)
   (log:write-log :info "Initializing lparallel kernel")
   (setf lparallel:*kernel* (lparallel:make-kernel 10))
+  (refresh-routes-and-stops)
   (start))
 
 (defun exit ()
