@@ -4,6 +4,16 @@ A tool for building a database of transit events by using the CTA bus tracker AP
 
 ## Setup
 
+### Database
+
+You'll need [PostgreSQL](http://www.postgresql.org) and the [PostGIS](http://www.postgis.org) extension installed. Create a database and load `cta.ddl` to set up the schema. Configure the \*database-connection-spec\* in `controller/variables.lisp` to match your database information.
+
+### API key
+
+Configure the *bus-api-key* in `api/variables.lisp`.
+
+### SBCL
+
 You will need [SBCL](http://www.sbcl.org) to run chicago-transit (it may run on other Common Lisps but is totally untested). Eventually I hope to package some shell scripts to facilitate running it, but at the moment you'll need to start it from the REPL. At the SBCL REPL, run:
 
 ```commonlisp
