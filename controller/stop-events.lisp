@@ -24,6 +24,7 @@
 
 (defun generate-stop-events ()
   (log:write-log :info "Begin generating stop events")
+  (sb-ext:gc :full t)
   (pomo:with-connection *database-connection-spec*
     (let ((new-predictions (api:get-predictions (api:get-all-current-buses))))
       (if *previous-predictions*
