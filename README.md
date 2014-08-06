@@ -1,6 +1,6 @@
 # chicago-transit
 
-A tool for building a database of transit events by using the CTA bus tracker API.
+This software polls the CTA Bus Tracker API once per minute in order to collect "stop events," each one representing a bus passing (or stopping at) a bus stop at a particular time. Each stop event is associated with a geocoded location. Stop events are stored in a PostgreSQL database. The resulting data is suitable for analyzing or mapping bus frequency by geographic boundary, time, date, etc.
 
 ## Dependencies
 
