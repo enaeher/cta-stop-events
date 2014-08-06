@@ -17,6 +17,5 @@
   (log:write-log :info "Shutting down")
   (stop))
 
-(eval-when (:compile-toplevel :execute)
-  (pushnew 'init sb-ext:*init-hooks*)
-  (pushnew 'exit sb-ext:*exit-hooks*))
+(pushnew 'init sb-ext:*init-hooks*)
+(pushnew 'exit sb-ext:*exit-hooks*)
