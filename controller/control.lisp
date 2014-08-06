@@ -19,6 +19,7 @@
   (log:write-log :info "Stopping all timers")
   (trivial-timers:unschedule-timer *routes-and-stops-timer*)
   (trivial-timers:unschedule-timer *stop-events-timer*)
+  (setf *previous-predictions* nil)
   (values))
 
 (defun debug-on ()
