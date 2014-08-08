@@ -12,11 +12,17 @@
                               collecting (cons (string-downcase key) value))))
          (final-uri (concatenate 'string base-uri "&" (drakma::alist-to-url-encoded-string parameters :utf8 'drakma:url-encode))))
     (log:write-log :debug final-uri)
-    (cxml:parse 
-     (drakma:http-request base-uri
-                          :parameters parameters
-                          :want-stream t)
-     (cxml-dom:make-dom-builder))))
+    (handler-case
+        (cxml:parse
+         (handler-case
+             (drakma:http-request base-uri
+                                  :parameters parameters
+                                  :want-stream t)
+           (error (e)
+             (log:write-log :error (format nil "Error requesting ~A: ~A" final-uri e))))
+         (cxml-dom:make-dom-builder))
+      (error (e)
+        (log:write-log :error (format nil "Error parsing response for ~A" final-uri))))))
 
 (defun xpath->number (node xpath)
   (xpath:number-value (xpath:evaluate xpath node)))
