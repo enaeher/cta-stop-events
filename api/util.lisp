@@ -1,28 +1,32 @@
 (in-package :cta.api)
 
-(defun get-cta-data (name &key (callback #'identity) (xpath "/") parameters)
+(defun process-cta-data (xml &key (callback #'identity) (xpath "/"))
   (xpath:map-node-set->list
    (lambda (node) (funcall callback node))  
-   (xpath:evaluate xpath (%cta-api-call name parameters))))
+   (xpath:evaluate xpath (%parse-xml-from-stream xml))))
 
-(defun %cta-api-call (name parameters)
+(defun %get-stream-from-api (uri parameters)
+  (handler-case
+      (drakma:http-request uri
+                           :parameters parameters
+                           :want-stream t)
+    (error (e)
+      (log:write-log :err (format nil "Error requesting ~A: ~A" uri e)))))
+
+(defun %parse-xml-from-stream (stream)
+  (handler-case
+      (cxml:parse stream (cxml-dom:make-dom-builder))
+    (error (e)
+        (log:write-log :err (format nil "Error parsing XML: ~A" e)))))
+
+(defun retrieve-cta-data (name &key parameters)
   (let* ((base-uri (concatenate 'string *bus-api-base-uri* name))
          (parameters (cons (cons "key" *bus-api-key*)
                            (loop for (key value) on parameters by #'cddr
                               collecting (cons (string-downcase key) value))))
-         (final-uri (concatenate 'string base-uri "&" (drakma::alist-to-url-encoded-string parameters :utf8 'drakma:url-encode))))
+         (final-uri (concatenate 'string base-uri "?" (drakma::alist-to-url-encoded-string parameters :utf8 'drakma:url-encode))))
     (log:write-log :debug final-uri)
-    (handler-case
-        (cxml:parse
-         (handler-case
-             (drakma:http-request base-uri
-                                  :parameters parameters
-                                  :want-stream t)
-           (error (e)
-             (log:write-log :error (format nil "Error requesting ~A: ~A" final-uri e))))
-         (cxml-dom:make-dom-builder))
-      (error (e)
-        (log:write-log :error (format nil "Error parsing response for ~A" final-uri))))))
+    (%get-stream-from-api base-uri parameters)))
 
 (defun xpath->number (node xpath)
   (xpath:number-value (xpath:evaluate xpath node)))

@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<buses>
+  <bus>
+    <id>1411</id>
+    <rt>PI</rt>
+    <c>#FFFFFF</c>
+    <d>South Bound</d>
+    <dd>South Bound</dd>
+    <dn>S</dn>
+    <lat>41.97744333333333</lat>
+    <lon>-87.70732166666667</lon>
+    <pid>0</pid>
+    <pd>N/A</pd>
+    <run>P084</run>
+    <fs>N/A</fs>
+    <op>52105</op>
+    <bid>8159087</bid>
+    <wid1>0P</wid1>
+    <wid2>084</wid2>
+  </bus>
+  <bus>
+    <id>1410</id>
+    <rt>OR</rt>
+    <ar>22</ar>
+    <c>#FFFFFF</c>
+    <d>West Bound</d>
+    <dd>West Bound</dd>
+    <dn>WSW</dn>
+    <lat>41.87417666666666</lat>
+    <lon>-87.63034333333333</lon>
+    <pid>3932</pid>
+    <pd>[Northbound]</pd>
+    <run>P208</run>
+    <fs>Howard</fs>
+    <op>34058</op>
+    <bid>8159205</bid>
+    <wid1>0P</wid1>
+    <wid2>208</wid2>
+  </bus>
+  <bus>
+    <id>1414</id>
+    <rt>PI</rt>
+    <c>#FFFFFF</c>
+    <d>East Bound</d>
+    <dd>East Bound</dd>
+    <dn>E</dn>
+    <lat>41.892248333333335</lat>
+    <lon>-87.73019333333333</lon>
+    <pid>0</pid>
+    <pd>N/A</pd>
+    <run>5613</run>
+    <fs>N/A</fs>
+    <op>42839</op>
+    <bid>8175009</bid>
+    <wid1>05</wid1>
+    <wid2>613</wid2>
+  </bus>
+  <bus>
+    <id>1412</id>
+    <rt>97</rt>
+    <c>#cc3300</c>
+    <d>North Bound</d>
+    <dd>North Bound</dd>
+    <dn>N</dn>
+    <lat>42.05858139493572</lat>
+    <lon>-87.75144480235541</lon>
+    <pid>4372</pid>
+    <pd>[Westbound]</pd>
+    <run>P907</run>
+    <fs>Old Orchard</fs>
+    <op>31353</op>
+    <bid>8158997</bid>
+    <wid1>0P</wid1>
+    <wid2>907</wid2>
+  </bus>
+</buses>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<bustime-response>
+  <tm></tm>
+  <prd>
+    <tmstmp>20090611 14:34</tmstmp>
+    <typ>A</typ>
+    <stpid>456</stpid>
+    <stpnm>Madison &amp; Jefferson</stpnm>
+    <vid>2013</vid>
+    <dstp>891</dstp>
+    <rt>20</rt>
+    <rtdir>West Bound</rtdir>
+    <rtdst>Austin</rtdst>
+    <prdtm>20090611 14:40</prdtm>
+  </prd>
+  <prd>
+    <tmstmp>20090611 14:34</tmstmp>
+    <typ>A</typ>
+    <stpid>456</stpid>
+    <stpnm>Madison &amp; Jefferson</stpnm>
+    <vid>6435</vid>
+    <dstp>1587</dstp>
+    <rt>20</rt>
+    <rtdir>West Bound</rtdir>
+    <rtdst>Austin</rtdst>
+    <prdtm>20090611 14:48</prdtm>
+  </prd>
+</bustime-response>

@@ -19,6 +19,11 @@
    :timestamp (xpath->simple-date node "tmstmp")
    :predicted-time (xpath->simple-date node "prdtm")))
 
+(defun process-predictions (predictions)
+  (process-cta-data predictions
+                    :xpath "bustime-response/prd"
+                    :callback 'xml->prediction))
+
 (defun get-predictions (buses)
   (%get-predictions-fast buses))
 
@@ -32,10 +37,9 @@
   (let ((predictions (make-hash-table :size 1000 :synchronized t)))
     (lparallel:pmapc
      (lambda (ten)
-       (dolist (prediction (get-cta-data "getpredictions"
-                                         :xpath "bustime-response/prd"
-                                         :callback 'xml->prediction
-                                         :parameters `(:vid ,(format nil "~{~a~^,~}" (mapcar 'bus-id ten)))))
+       (dolist (prediction (process-predictions
+                            (retrieve-cta-data "getpredictions"
+                                               :parameters `(:vid ,(format nil "~{~a~^,~}" (mapcar 'bus-id ten))))))
          (unless (gethash (prediction-bus prediction) predictions)
            (setf (gethash (prediction-bus prediction) predictions) prediction))))
      (group 10 buses))
@@ -49,11 +53,10 @@ roughly twice as long due to the additional network overhead."
   (let ((predictions (make-hash-table :size 1000 :synchronized t)))
     (lparallel:pmapc
      (lambda (bus)
-       (alexandria:when-let (prediction (car (get-cta-data "getpredictions"
-                                                           :xpath "bustime-response/prd"
-                                                           :callback 'xml->prediction
-                                                           :parameters `(:vid ,(princ-to-string (bus-id bus))
-                                                                              :top "1"))))
+       (alexandria:when-let (prediction (car (process-predictions
+                                              (retrieve-cta-data "getpredictions"
+                                                                 :parameters `(:vid ,(princ-to-string (bus-id bus))
+                                                                                    :top "1")))))
          (setf (gethash (prediction-bus prediction) predictions) prediction)))
      buses)
     predictions))

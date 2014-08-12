@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<bustime-response>
+  <stop>
+    <stpid>4727</stpid>
+    <stpnm>1633 W Madison</stpnm>
+    <lat>41.881265</lat>
+    <lon>-87.66849</lon>
+  </stop>
+  <stop>
+    <stpid>9604</stpid>
+    <stpnm>Austin &amp; Pleasant/Fulton</stpnm>
+    <lat>41.885206667</lat>transitchicago.com v1.1 / rev. 2011-06-16 / p.17
+    <lon>-87.7748733333333</lon>
+  </stop>
+  <stop>
+    <stpid>9605</stpid>
+    <stpnm>Austin &amp; Randolph/West End</stpnm>
+    <lon>41.8838633333333</lon>
+    <lat>-87.7748566666667</lat>
+  </stop>
+  <stop>
+    <stpid>9603</stpid>
+    <stpnm>Austin &amp; South Blvd/Corcoran</stpnm>
+    <lat>41.886908333</lat>
+    <lon>-87.77493667</lon>
+  </stop>
+</bustime-response>
