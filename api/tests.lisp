@@ -7,6 +7,8 @@
                 #:process-buses
                 #:process-predictions))
 
+(in-package :cta.api.tests) 
+
 (defparameter *sample-responses-directory* (cl-fad:merge-pathnames-as-directory
                                             (asdf/system:system-source-directory :cta)
                                             "api/"

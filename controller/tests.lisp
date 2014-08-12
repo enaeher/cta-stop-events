@@ -6,6 +6,8 @@
   (:import-from :cta.controller
                 #:find-fulfilled-predictions))
 
+(in-package :cta.controller.tests)
+
 (5am:def-suite cta.controller)
 (5am:in-suite cta.controller)
 
