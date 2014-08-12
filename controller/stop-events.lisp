@@ -22,7 +22,8 @@ Returns a flat list of all fulfilled predictions."
      ;; stop in B but does not occur in B. In theory this shouldn't
      ;; happen, but I'm not certain enough of that to trust
      ;; set-intersection.
-     :for position := (position (api:prediction-stop (car prediction-list-b)) prediction-list-a :key 'api:prediction-stop)
+     :for position := (alexandria:when-let (first-prediction-b (car prediction-list-b))
+                        (position (api:prediction-stop first-prediction-b) prediction-list-a :key 'api:prediction-stop))
      :when position
      :nconc (subseq prediction-list-a 0 position)))
 
