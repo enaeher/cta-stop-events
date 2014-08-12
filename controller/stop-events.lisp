@@ -1,19 +1,30 @@
 (in-package :cta.controller)
 
 (defun find-fulfilled-predictions (a b)
-  "A and B should each be hash tables of predictions keyed by bus
-  ID. This function will return the set of predictions from A where a
-  prediction for the same bus also occurs in B, but with a different
-  predicted next stop. (The idea is that these are predictions of
-  stops which actually occurred at some time during the interval
-  between the generation of A and B.)"
+  "A and B should each be hash tables of keyed by bus ID, the values
+  of which are lists of predictions in ascending chronological
+  order. This function tries to determine which predictions from A
+  have been fulfilled by the time that B was generated.
+
+It does this by (for each bus) looking at the earliest predicted stop
+in B, then trying to find that stop in the ordered list of predictions
+for A. If it does, it considers all predictions in A which are earlier
+than the prediction for that stop to have been fulfilled.
+
+Returns a flat list of all fulfilled predictions."
   (loop
      :for key :being :the :hash-keys :of a
      :using (hash-value prediction-list-a)
-     :for prediction-a := (car prediction-list-a)
-     :when (alexandria:when-let (prediction-b (car (gethash key b)))
-             (not (eql (api:prediction-stop prediction-a) (api:prediction-stop prediction-b))))
-     :collect prediction-a))
+     :for prediction-list-b := (gethash key b)
+     ;; we could simplify the next bit by using set-intersection, but
+     ;; it could return wrong results in certain pathological cases,
+     ;; where A has a predicted stop which is later than the first
+     ;; stop in B but does not occur in B. In theory this shouldn't
+     ;; happen, but I'm not certain enough of that to trust
+     ;; set-intersection.
+     :for position := (position (api:prediction-stop (car prediction-list-b)) prediction-list-a :key 'api:prediction-stop)
+     :when position
+     :nconc (subseq prediction-list-a 0 position)))
 
 (defun prediction->stop-event (prediction)
   (make-instance 'schema:stop-event
