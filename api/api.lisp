@@ -30,11 +30,6 @@
                  :latitude (xpath->number node "lat")
                  :longitude (xpath->number node "lon")))
 
-(defun get-vehicles ()
-  (get-cta-data "getvehicles"
-                :xpath "bustime-response/vehicle"
-                :callback 'xml->bus))
-
 (defun get-all-current-buses ()
   "The current, documented version of the API provides no way to get a
 list of every bus in one call. Luckily, this undocumented, unsupported
