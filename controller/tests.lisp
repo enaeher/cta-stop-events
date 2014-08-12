@@ -41,3 +41,16 @@ runs), we should not record any stop events."
     (setf (gethash 1 b) (subseq predictions 5 9))
     (let ((fulfilled-predictions (find-fulfilled-predictions a b)))
       (5am:is (null fulfilled-predictions)))))
+
+(5am:test no-stop-event-when-no-stop-passed
+  "If the predicted next stop is the same in both a and b, the bus has
+not passed any stops in the interim and no stop events should be
+recorded."
+  (let ((predictions (loop :for i :from 0 :upto 9
+                        :collecting (make-prediction :bus 1 :stop i)))
+        (a (make-hash-table))
+        (b (make-hash-table)))
+    (setf (gethash 1 a) predictions
+          (gethash 1 b) predictions)
+    (let ((fulfilled-predictions (find-fulfilled-predictions a b)))
+      (5am:is (null fulfilled-predictions)))))
