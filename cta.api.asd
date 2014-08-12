@@ -9,4 +9,5 @@
                                      (:file "variables" :depends-on ("package"))
                                      (:file "util" :depends-on ("variables"))
                                      (:file "api" :depends-on ("util"))
-                                     (:file "prediction" :depends-on ("util"))))))
+                                     (:file "prediction" :depends-on ("util"))
+                                     (:file "tests" :depends-on ("prediction"))))))
