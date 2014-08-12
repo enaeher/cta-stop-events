@@ -9,8 +9,9 @@
   between the generation of A and B.)"
   (loop
      :for key :being :the :hash-keys :of a
-     :using (hash-value prediction-a)
-     :when (alexandria:when-let (prediction-b (gethash key b))
+     :using (hash-value prediction-list-a)
+     :for prediction-a := (car prediction-list-a)
+     :when (alexandria:when-let (prediction-b (car (gethash key b)))
              (not (eql (api:prediction-stop prediction-a) (api:prediction-stop prediction-b))))
      :collect prediction-a))
 

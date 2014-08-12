@@ -25,40 +25,23 @@
                     :callback 'xml->prediction))
 
 (defun get-predictions (buses)
-  (%get-predictions-fast buses))
-
-(defun %get-predictions-fast (buses)
   "Takes a list of BUSES. Requests all predictions for each group of
-  10 buses (the maximum allowed per request by the API). Discards all
-  but the first prediction for each bus, which will be the
-  earliest (the API documentation guarantees that predictions will be
-  returned in ascending order of prdtm), and returns the set of these
-  earliest predictions as a hash table keyed by bus ID."
+  10 buses (the maximum allowed per request by the API). Builds a hash
+  table keyed by bus ID of the list of predictions for each bus, in
+  original order (which is guaranteed by the API documentation to be
+  ascending chronological order)."
   (let ((predictions (make-hash-table :size 1000 :synchronized t)))
     (lparallel:pmapc
      (lambda (ten)
        (dolist (prediction (process-predictions
                             (retrieve-cta-data "getpredictions"
                                                :parameters `(:vid ,(format nil "~{~a~^,~}" (mapcar 'bus-id ten))))))
-         (unless (gethash (prediction-bus prediction) predictions)
-           (setf (gethash (prediction-bus prediction) predictions) prediction))))
+         ;; build up the list of predictions in reverse order; we will reverse them after
+         (setf (gethash (prediction-bus prediction) predictions)
+               (cons prediction (gethash (prediction-bus prediction) predictions)))))
      (group 10 buses))
-    predictions))
-
-(defun %get-predictions-slow (buses)
-  "Gets predictions for each bus in BUSES one-by-one. This allows us
-to use the top parameter to retrieve only the first prediction for
-each bus. This conses much less than %get-predictions-fast, but takes
-roughly twice as long due to the additional network overhead."
-  (let ((predictions (make-hash-table :size 1000 :synchronized t)))
-    (lparallel:pmapc
-     (lambda (bus)
-       (alexandria:when-let (prediction (car (process-predictions
-                                              (retrieve-cta-data "getpredictions"
-                                                                 :parameters `(:vid ,(princ-to-string (bus-id bus))
-                                                                                    :top "1")))))
-         (setf (gethash (prediction-bus prediction) predictions) prediction)))
-     buses)
+    ;; reverse the order of the lists that are the values in the hash table
+    (maphash (lambda (k v) (setf (gethash k predictions) (nreverse v))) predictions)
     predictions))
 
 
