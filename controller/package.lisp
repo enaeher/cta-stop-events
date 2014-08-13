@@ -6,5 +6,6 @@
   (:export
    #:start
    #:stop
+   #:load-configuration
    #:debug-on
    #:debug-off))

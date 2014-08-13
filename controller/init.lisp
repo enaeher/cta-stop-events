@@ -2,7 +2,7 @@
 
 (defun load-configuration ()
   (log:write-log :info "Loading configuration file")
-  (load *config-file*))
+  (load (merge-pathnames sb-ext:*core-pathname* *config-file*)))
 
 (defun init ()
   (log:write-log :info "Initializing chicago-transit")
@@ -11,7 +11,6 @@
   (swank:create-server)
   (log:write-log :info "Initializing lparallel kernel")
   (setf lparallel:*kernel* (lparallel:make-kernel 10))
-  (refresh-routes-and-stops)
   (start))
 
 (defun exit ()
