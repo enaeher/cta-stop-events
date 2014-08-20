@@ -48,7 +48,7 @@ CREATE FUNCTION update_stop_location() RETURNS trigger
     AS $$
   BEGIN
     -- Populate stop_location with PostGIS POINT based on the provided latitude and longitude
-    NEW.stop_location := ('SRID=4326;POINT(' || NEW.latitude || ' ' || NEW.longitude || ')')::geometry;
+    NEW.stop_location := ('SRID=4326;POINT(' || NEW.longitude || ' ' || NEW.latitude || ')')::geometry;
     RETURN NEW;
   END;
 $$;
