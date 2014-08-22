@@ -3,7 +3,7 @@
   :author "Eli Naeher"
   :description "DAO definitions for CTA Bus Tracker API"
   :version (:read-file-form "VERSION")
-  :depends-on (:simple-date :postmodern)
+  :depends-on (:simple-date :local-time :postmodern)
   :components ((:module "schema"
                         :components ((:file "package")
                                      (:file "route" :depends-on ("package"))
