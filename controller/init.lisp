@@ -11,6 +11,9 @@
   (swank:create-server)
   (log:write-log :info "Initializing lparallel kernel")
   (setf lparallel:*kernel* (lparallel:make-kernel 10))
+  (unless (pomo:with-connection *database-connection-spec*
+            (pomo:query (:select t :from 'event-log :where (:= 'event-type "ROUTES-AND-STOPS"))))
+    (refresh-routes-and-stops))
   (start))
 
 (defun exit ()
