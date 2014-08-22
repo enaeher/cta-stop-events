@@ -9,6 +9,7 @@
    #:stop-event
    #:stop-route-direction
    #:route
+   #:event-log
    ;; accessors
    #:id
    #:name

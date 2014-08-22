@@ -9,4 +9,5 @@
                                      (:file "route" :depends-on ("package"))
                                      (:file "stop" :depends-on ("package"))
                                      (:file "stop-event" :depends-on ("package"))
-                                     (:file "stop-route-direction" :depends-on ("package"))))))
+                                     (:file "stop-route-direction" :depends-on ("package"))
+                                     (:file "log" :depends-on ("package"))))))

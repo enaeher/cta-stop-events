@@ -22,4 +22,5 @@ to deal with stops that are removed (i.e. stop appearing in the API)."
           (dolist (stop (api:get-stops route direction))
             (pomo:save-dao stop)
             (maybe-make-stop-route-direction stop route direction)))))
+    (pomo:save-dao (make-instance 'schema:event-log :event-type "ROUTES-AND-STOPS"))
     (log:write-log :info "Done refreshing routes and stops")))

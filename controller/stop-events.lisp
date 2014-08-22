@@ -52,4 +52,5 @@ Returns a flat list of all fulfilled predictions."
             (log:write-log :info "No previous stop events found (first run)"))
         (setf *previous-predictions* new-predictions))
       (log:write-log :info "Done generating stop events")
-      (generate-stop-intervals))))
+      (generate-stop-intervals)
+      (pomo:save-dao (make-instance 'schema:event-log :event-type "STOP-EVENTS")))))
