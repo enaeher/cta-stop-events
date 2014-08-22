@@ -109,7 +109,7 @@ CREATE TABLE stop (
 CREATE TABLE stop_event (
     stop_time timestamp without time zone NOT NULL,
     bus integer NOT NULL,
-    stop_route_direction integer
+    stop_route_direction integer NOT NULL
 );
 
 
@@ -168,6 +168,14 @@ ALTER TABLE ONLY stop_route_direction ALTER COLUMN id SET DEFAULT nextval('stop_
 
 ALTER TABLE ONLY route
     ADD CONSTRAINT bus_route_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: stop_event_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY stop_event
+    ADD CONSTRAINT stop_event_pkey PRIMARY KEY (stop_route_direction, stop_time);
 
 
 --
