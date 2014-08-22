@@ -40,6 +40,27 @@ COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial
 SET search_path = public, pg_catalog;
 
 --
+-- Name: generate_stop_intervals(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION generate_stop_intervals() RETURNS void
+    LANGUAGE sql
+    AS $$
+  WITH preliminary_intervals (interval_start, interval_end, stop_route_direction) AS
+  (SELECT lag(stop_time) OVER w interval_start, stop_time interval_end, stop_route_direction
+    FROM stop_event se
+    WHERE NOT EXISTS
+      (SELECT true
+        FROM stop_interval si
+        WHERE si.interval_end = se.stop_time
+        AND si.stop_route_direction = se.stop_route_direction)
+    WINDOW w AS (PARTITION BY stop_route_direction ORDER BY stop_time))
+  INSERT INTO stop_interval (interval_start, interval_end, stop_route_direction)
+  SELECT interval_start, interval_end, stop_route_direction FROM preliminary_intervals WHERE interval_start IS NOT NULL;
+$$;
+
+
+--
 -- Name: update_stop_location(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -87,10 +108,19 @@ CREATE TABLE stop (
 
 CREATE TABLE stop_event (
     stop_time timestamp without time zone NOT NULL,
-    direction text NOT NULL,
-    stop integer NOT NULL,
     bus integer NOT NULL,
-    route text NOT NULL
+    stop_route_direction integer
+);
+
+
+--
+-- Name: stop_interval; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE stop_interval (
+    interval_start timestamp without time zone,
+    interval_end timestamp without time zone,
+    stop_route_direction integer
 );
 
 
@@ -101,8 +131,35 @@ CREATE TABLE stop_event (
 CREATE TABLE stop_route_direction (
     stop integer NOT NULL,
     route text NOT NULL,
-    direction text NOT NULL
+    direction text NOT NULL,
+    id integer NOT NULL
 );
+
+
+--
+-- Name: stop_route_direction_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE stop_route_direction_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: stop_route_direction_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE stop_route_direction_id_seq OWNED BY stop_route_direction.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY stop_route_direction ALTER COLUMN id SET DEFAULT nextval('stop_route_direction_id_seq'::regclass);
 
 
 --
@@ -111,14 +168,6 @@ CREATE TABLE stop_route_direction (
 
 ALTER TABLE ONLY route
     ADD CONSTRAINT bus_route_pkey PRIMARY KEY (id);
-
-
---
--- Name: bus_stop_event_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY stop_event
-    ADD CONSTRAINT bus_stop_event_pkey PRIMARY KEY (stop_time, stop, route, direction);
 
 
 --
@@ -134,7 +183,15 @@ ALTER TABLE ONLY stop
 --
 
 ALTER TABLE ONLY stop_route_direction
-    ADD CONSTRAINT stop_route_direction_pkey PRIMARY KEY (stop, route, direction);
+    ADD CONSTRAINT stop_route_direction_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: stop_route_direction_stop_route_direction_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY stop_route_direction
+    ADD CONSTRAINT stop_route_direction_stop_route_direction_key UNIQUE (stop, route, direction);
 
 
 --
@@ -145,6 +202,41 @@ CREATE INDEX route_id ON route USING btree (id);
 
 
 --
+-- Name: stop_event_stop_route_direction_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX stop_event_stop_route_direction_idx ON stop_event USING btree (stop_route_direction);
+
+
+--
+-- Name: stop_event_stop_time_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX stop_event_stop_time_idx ON stop_event USING btree (stop_time);
+
+
+--
+-- Name: stop_route_direction_direction_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX stop_route_direction_direction_idx ON stop_route_direction USING btree (direction);
+
+
+--
+-- Name: stop_route_direction_route_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX stop_route_direction_route_idx ON stop_route_direction USING btree (route);
+
+
+--
+-- Name: stop_route_direction_stop_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX stop_route_direction_stop_idx ON stop_route_direction USING btree (stop);
+
+
+--
 -- Name: update_stop_location; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -152,19 +244,19 @@ CREATE TRIGGER update_stop_location BEFORE INSERT OR UPDATE ON stop FOR EACH ROW
 
 
 --
--- Name: stop_event_route; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: stop_event_stop_route_direction_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY stop_event
-    ADD CONSTRAINT stop_event_route FOREIGN KEY (route) REFERENCES route(id);
+    ADD CONSTRAINT stop_event_stop_route_direction_fkey FOREIGN KEY (stop_route_direction) REFERENCES stop_route_direction(id);
 
 
 --
--- Name: stop_event_stop; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: stop_interval_stop_route_direction_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY stop_event
-    ADD CONSTRAINT stop_event_stop FOREIGN KEY (stop) REFERENCES stop(id);
+ALTER TABLE ONLY stop_interval
+    ADD CONSTRAINT stop_interval_stop_route_direction_fkey FOREIGN KEY (stop_route_direction) REFERENCES stop_route_direction(id);
 
 
 --
