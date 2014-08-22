@@ -80,6 +80,37 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: event_log; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE event_log (
+    id bigint NOT NULL,
+    event_time timestamp without time zone,
+    event_type text,
+    description text
+);
+
+
+--
+-- Name: log_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE log_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE log_id_seq OWNED BY event_log.id;
+
+
+--
 -- Name: route; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -153,6 +184,13 @@ CREATE SEQUENCE stop_route_direction_id_seq
 --
 
 ALTER SEQUENCE stop_route_direction_id_seq OWNED BY stop_route_direction.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY event_log ALTER COLUMN id SET DEFAULT nextval('log_id_seq'::regclass);
 
 
 --
