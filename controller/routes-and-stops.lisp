@@ -1,12 +1,13 @@
 (in-package :cta.controller)
 
 (defun maybe-make-stop-route-direction (stop route direction)
-  (let ((dao (make-instance 'schema:stop-route-direction
-                            :stop (schema:id stop)
-                            :route (schema:id route)
-                            :direction direction)))
-    (unless (pomo:dao-exists-p dao)
-      (pomo:save-dao dao))))
+  (unless (schema:get-stop-route-direction-id (schema:id stop)
+                                              (schema:id route)
+                                              direction)
+    (pomo:insert-dao (make-instance 'schema:stop-route-direction
+                                    :stop (schema:id stop)
+                                    :route (schema:id route)
+                                    :direction direction))))
 
 (defun refresh-routes-and-stops ()
   "Refresh the 'static' data (routes and stops) from the API and store

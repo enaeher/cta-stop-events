@@ -12,4 +12,6 @@
    ;; accessors
    #:id
    #:name
+   ;; misc
+   #:get-stop-route-direction-id
    ))

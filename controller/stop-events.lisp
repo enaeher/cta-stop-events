@@ -29,11 +29,16 @@ Returns a flat list of all fulfilled predictions."
 
 (defun prediction->stop-event (prediction)
   (make-instance 'schema:stop-event
-                 :route (api:prediction-route prediction)
-                 :bus (api:prediction-bus prediction)
-                 :stop (api:prediction-stop prediction)
-                 :direction (api:prediction-direction prediction)
-                 :stop-time (api:prediction-predicted-time prediction)))
+                 :stop-route-direction (schema:get-stop-route-direction-id (api:prediction-stop prediction)
+                                                                           (api:prediction-route prediction)
+                                                                           (api:prediction-direction prediction))
+                 :stop-time (api:prediction-predicted-time prediction)
+                 :bus (api:prediction-bus prediction)))
+
+(defun generate-stop-intervals ()
+  (log:write-log :info "Generating stop intervals")
+  (pomo:execute (:select (:generate-stop-intervals)))
+  (log:write-log :info "Done generating stop intervals"))
 
 (defun generate-stop-events ()
   (sb-sys:with-interrupts
@@ -45,5 +50,6 @@ Returns a flat list of all fulfilled predictions."
             (dolist (prediction (find-fulfilled-predictions *previous-predictions* new-predictions))
               (pomo:save-dao (prediction->stop-event prediction)))
             (log:write-log :info "No previous stop events found (first run)"))
-        (setf *previous-predictions* new-predictions)))
-    (log:write-log :info "Done generating stop events")))
+        (setf *previous-predictions* new-predictions))
+      (log:write-log :info "Done generating stop events")
+      (generate-stop-intervals))))
