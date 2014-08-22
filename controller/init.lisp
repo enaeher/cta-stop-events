@@ -2,7 +2,7 @@
 
 (defun load-configuration ()
   (log:write-log :info "Loading configuration file")
-  (load (merge-pathnames sb-ext:*core-pathname* *config-file*)))
+  (load (merge-pathnames (cl-fad:pathname-directory-pathname sb-ext:*core-pathname*) *config-file*)))
 
 (defun init ()
   (log:write-log :info "Initializing chicago-transit")
