@@ -12,7 +12,7 @@
   (log:write-log :info "Initializing lparallel kernel")
   (setf lparallel:*kernel* (lparallel:make-kernel 10))
   (unless (pomo:with-connection *database-connection-spec*
-            (pomo:query (:select t :from 'event-log :where (:= 'event-type "ROUTES-AND-STOPS"))))
+            (pomo:query (:select t :from 'event-log :where (:= 'event-type "ROUTES-AND-STOPS")) :single))
     (refresh-routes-and-stops))
   (start))
 
