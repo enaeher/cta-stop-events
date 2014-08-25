@@ -262,6 +262,27 @@ CREATE INDEX stop_event_stop_time_idx ON stop_event USING btree (stop_time);
 
 
 --
+-- Name: stop_interval_date_part_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX stop_interval_date_part_idx ON stop_interval USING btree (date_part('hour'::text, interval_end));
+
+
+--
+-- Name: stop_interval_date_part_idx1; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX stop_interval_date_part_idx1 ON stop_interval USING btree (date_part('dow'::text, interval_end));
+
+
+--
+-- Name: stop_interval_expr_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX stop_interval_expr_idx ON stop_interval USING btree (((date_part('epoch'::text, interval_end) - date_part('epoch'::text, interval_start))));
+
+
+--
 -- Name: stop_route_direction_direction_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -280,6 +301,13 @@ CREATE INDEX stop_route_direction_route_idx ON stop_route_direction USING btree 
 --
 
 CREATE INDEX stop_route_direction_stop_idx ON stop_route_direction USING btree (stop);
+
+
+--
+-- Name: stop_st_asgeojson_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX stop_st_asgeojson_idx ON stop USING btree (st_asgeojson(stop_location));
 
 
 --
