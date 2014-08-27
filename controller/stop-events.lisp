@@ -27,12 +27,12 @@ Returns a flat list of all fulfilled predictions."
      :when position
      :nconc (subseq prediction-list-a 0 position)))
 
-(defun prediction->stop-event (prediction)
+(defun prediction->stop-event (prediction current-time)
   (make-instance 'schema:stop-event
                  :stop-route-direction (schema:get-stop-route-direction-id (api:prediction-stop prediction)
                                                                            (api:prediction-route prediction)
                                                                            (api:prediction-direction prediction))
-                 :stop-time (api:prediction-predicted-time prediction)
+                 :stop-time current-time
                  :bus (api:prediction-bus prediction)))
 
 (defun generate-stop-intervals ()
@@ -44,7 +44,7 @@ Returns a flat list of all fulfilled predictions."
   (sb-sys:with-interrupts
     (log:write-log :info "Begin generating stop events")
     (sb-ext:gc :full t)
-    (let ((current-time (local-time:timestamp-minimize-part (local-time:now) :sec)))
+    (let ((current-time (simple-date:universal-time-to-timestamp (get-universal-time))))
       (pomo:with-connection *database-connection-spec*
         (let ((new-predictions (api:get-predictions (api:get-all-current-buses))))
           (if *previous-predictions*
