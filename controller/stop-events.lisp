@@ -32,7 +32,7 @@ Returns a flat list of all fulfilled predictions."
                  :stop-route-direction (schema:get-stop-route-direction-id (api:prediction-stop prediction)
                                                                            (api:prediction-route prediction)
                                                                            (api:prediction-direction prediction))
-                 :stop-time (api:prediction-timestamp prediction)
+                 :stop-time (api:prediction-predicted-time prediction)
                  :bus (api:prediction-bus prediction)))
 
 (defun generate-stop-intervals ()

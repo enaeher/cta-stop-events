@@ -13,6 +13,7 @@
    ;; accessors
    #:id
    #:name
+   #:stop-time
    ;; misc
    #:get-stop-route-direction-id
    ))
